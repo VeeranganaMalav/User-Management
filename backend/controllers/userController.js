@@ -1,6 +1,6 @@
 const db = require("../db/index.js");
 
-const User = db.user;
+const User = db.account;
 
 //User signup
 exports.signup = (req, res) => {
