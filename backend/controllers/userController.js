@@ -1,6 +1,6 @@
 const db = require("../db/index.js");
 
-const User = db.account;
+const User = db.user;
 
 //User signup
 exports.signup = (req, res) => {
@@ -39,7 +39,7 @@ exports.login = (req, res) => {
         res.send("Please enter the required fields");
     }
 
-    const existingUser = User.findOne({ 
+    const existingUser = User.findOne({
         where : {
             email : email
         }
@@ -57,7 +57,7 @@ exports.login = (req, res) => {
 
 //Add address
 exports.addAddress = (req, res) => {
-    
+
 };
 
 //List users with address

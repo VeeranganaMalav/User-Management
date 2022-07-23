@@ -2,16 +2,11 @@ var Sequelize = require('sequelize');
 var db = require('../index.js');
 
 module.exports = db.define('account', {
-    name : {
+    email : {
         type : Sequelize.STRING,
         allowNull : false
     },
-    email : {
-        type : Sequelize.STRING,
-        allowNull : false,
-        primaryKey : true
-    },
-    address : {
+    password : {
         type : Sequelize.STRING,
     }
 });

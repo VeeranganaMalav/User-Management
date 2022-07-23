@@ -10,10 +10,10 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
+db.user = require('./models/user.js')(sequelize, Sequelize);
 db.account = require('./models/account.js')(sequelize, Sequelize);
-db.credentials = require('./models/credentials.js')(sequelize, Sequelize);
 
-db.account.hasOne(db.credentials);
-db.credentials.belongsTo(db.account, {foreignKey : 'emailId'});
+db.user.hasOne(db.account);
+db.account.belongsTo(db.user, {foreignKey : 'emailId'});
 
 module.exports = db;
