@@ -4,7 +4,7 @@ const app = express();
 const PORT = 3000;
 app.use(bodyParser.json());
 
-const db = require('./db/models');
+const db = require('./db/index.js');
 
 require("./routes/routes.js")(app);
 
