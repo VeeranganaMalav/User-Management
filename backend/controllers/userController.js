@@ -1,3 +1,4 @@
+const { user } = require("../db/index.js");
 const db = require("../db/index.js");
 
 const User = db.user;
@@ -5,7 +6,9 @@ const User = db.user;
 //User signup
 exports.signup = (req, res) => {
     // check for missing fields
-    if (!req.body.name || !req.body.email){
+    const {firstName, lastName, email, password, address} = req.body;
+
+    if (!firstName || !lastName || !email || !password){
         res.status(400).send("Please enter the missing fields");
         return;
     }
@@ -20,12 +23,10 @@ exports.signup = (req, res) => {
                 res.status(200).send({message : `User with the email ${req.body.email} already exits`});
             }
             else{
-                // const salt = bcrypt.genSalt(10);
                 User.create(req.body)
                     .then((data) => {
                         res.status(200).send(data);
                         // res.send("Account registered!");
-                        // res.redirect("/login");
                     });
                 
             }
@@ -36,63 +37,34 @@ exports.signup = (req, res) => {
 
 //User login
 exports.login = (req, res) => {
+    const attemptedPassword = req.body.password;
+    delete req.body.password;
+
     User.findOne({
         where : {
             email : req.body.email
+        },
+        attributes : {
+            include : ['password', 'salt']
         }
         }).then(existingUser => {
-            if(!existingUser){
-                res.status(404).send({message : `Account with email ${req.body.email} does not exist`});
+            if(!existingUser || !attemptedPassword){      //if invalid email or password is provided
+                res.status(401).send({message : 'Not Authorized to access the user account'});
             }
             else{
-                var comparePassword = bcrypt.compareSync(req.body.password, existingAccount.password);
-
-                if(!comparePassword){
-                    res.send({message : 'Invalid Password'});
+                const hashedPassword = existingUser.hashPassword(attemptedPassword);
+                if(hashedPassword !== existingUser.password){
+                    res.status(401);
+                    return;
                 }
-
+                else{
+                    res.status(200).send(existingUser);
+                } 
             }
+        }).catch((err) => {
+            res.status(500).send({message : 'Error while loggong in'});
         })
 };
-
-//Add address in user model
-/* exports.addAddress = (req, res) => {
-    const emailId = req.body.email;
-
-    const existingUser = User.findByPk({
-                                where : {
-                                    email : emailId
-                                }
-                            });
-
-    if(!existingUser){      //User not found
-        res.status(404).send({message : `User with email ${emailId} does not exist`});
-    }
-    else{
-        if(!existingUser.address){      //if user address is empty
-            existingUser.address = req.body.address;
-            existingUser.save();
-
-            res.status(200).send({message : `Address for the user with email ${emailId} was added successfully`});
-        }
-        else{       //if user address is not empty
-            res.status(400).send({message : `Address for the user with email ${emailId} is already added`});
-        }
-    }
-}; */
-
-//List users with address
-/* exports.listUsersWithAddress = (req, res) => {
-    User.findAll({
-            attributes : ['name', 'address']    //only selected fields from user model will be retrieved
-        })
-        .then((data) => {
-            res.status(200).send(data);
-        })
-        .catch((err) => {
-            res.status(500).send({message : 'Error retrieving users'});
-        });
-}; */
 
 //Update user
 exports.updateUser = (req, res) => {

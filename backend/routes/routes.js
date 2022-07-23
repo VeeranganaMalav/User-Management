@@ -6,7 +6,7 @@ module.exports = app => {
     router.post('/signup', userController.signup);
 
     //User Login
-    // router.post('/login', userController.login);
+    router.get('/login', userController.login);
 
     //Add user address
     // router.post('/addAddress', userController.addAddress);
