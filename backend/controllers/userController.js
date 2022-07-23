@@ -66,8 +66,8 @@ exports.login = (req, res) => {
 };
 
 //List user details
-exports.getUserDetails = (req, res) => {
-    const email = req.body.email;
+/* exports.getUserDetails = (req, res) => {
+    const email = req.params.userEmail;
 
     User.findOne({
         where : {
@@ -86,7 +86,7 @@ exports.getUserDetails = (req, res) => {
     }).catch((err) => {
         res.status(500).send({message : `Error while creating user with email ${email}`})
     });
-};
+}; */
 
 //Update user details
 exports.updateUser = (req, res) => {

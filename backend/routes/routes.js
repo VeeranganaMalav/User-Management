@@ -6,10 +6,10 @@ module.exports = app => {
     router.post('/signup', userController.signup);
 
     //User Login
-    router.get('/login', userController.login);
+    router.post('/login', userController.login);
 
     //List all users details
-    // router.get('/usersDetails', userController.getUserDetails);
+    // router.get('/userDetails/:userEmail', userController.getUserDetails);
 
     //Update user details
     router.put('/updateUserDetails', userController.updateUser);
