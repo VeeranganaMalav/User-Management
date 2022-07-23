@@ -6,16 +6,16 @@ module.exports = app => {
     router.post('/signup', userController.signup);
 
     //User Login
-    router.post('/login', userController.login);
+    // router.post('/login', userController.login);
 
     //Add user address
-    router.post('/addAddress', userController.addAddress);
+    // router.post('/addAddress', userController.addAddress);
 
     //List all users with address
-    router.get('/users', userController.listUsersWithAddress);
+    // router.get('/users', userController.listUsersWithAddress);
 
     //Update user
     router.put('/updateUser', userController.updateUser);
-    
+
     app.use('/api', router);
 };
