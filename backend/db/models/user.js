@@ -1,10 +1,13 @@
 var Sequelize = require('sequelize');
-const { user } = require('../index.js');
 var db = require('../index.js');
 
 module.exports = (sequelize, Sequelize) => {
     const User = db.define('user', {
-        name : {
+        firstName : {
+            type : Sequelize.STRING,
+            allowNull : false
+        },
+        lastName : {
             type : Sequelize.STRING,
             allowNull : false
         },
@@ -12,6 +15,9 @@ module.exports = (sequelize, Sequelize) => {
             type : Sequelize.STRING,
             allowNull : false,
             primaryKey : true
+        },
+        password : {
+            type : Sequelize.STRING,
         },
         address : {
             type : Sequelize.STRING,
