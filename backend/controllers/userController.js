@@ -5,9 +5,9 @@ const User = db.user;
 
 //User signup
 exports.signup = (req, res) => {
-    // check for missing fields
     const {firstName, lastName, email, password, address} = req.body;
 
+    // check for missing fields
     if (!firstName || !lastName || !email || !password){
         res.status(400).send("Please enter the missing fields");
         return;
@@ -16,22 +16,20 @@ exports.signup = (req, res) => {
     //find if the user already exists
     User.findOne({
             where : {
-                email : req.body.email
+                email : email
             }
         }).then(existingUser => {
             if(existingUser){
-                res.status(200).send({message : `User with the email ${req.body.email} already exits`});
+                res.status(200).send({message : `User with the email ${email} already exits`});
             }
-            else{
+            else{       //if user does not exist then create a new one
                 User.create(req.body)
-                    .then((data) => {
-                        res.status(200).send(data);
-                        // res.send("Account registered!");
-                    });
-                
+                    .then((createdUser) => {
+                        res.status(200).send(createdUser);
+                    }); 
             }
         }).catch((err) => {
-            res.status(500).send({message : `Error while creating user with email ${req.body.email}`})
+            res.status(500).send({message : `Error while creating user with email ${email}`})
         });
 };
 
@@ -48,13 +46,14 @@ exports.login = (req, res) => {
             include : ['password', 'salt']
         }
         }).then(existingUser => {
-            if(!existingUser || !attemptedPassword){      //if invalid email or password is provided
+            if(!existingUser || !attemptedPassword){      //if invalid email is provided or password is not provided
                 res.status(401).send({message : 'Not Authorized to access the user account'});
             }
             else{
                 const hashedPassword = existingUser.hashPassword(attemptedPassword);
-                if(hashedPassword !== existingUser.password){
-                    res.status(401);
+                //if user with the given email exists then check the attempted hashedPassword with the hashed password of already existing user
+                if(hashedPassword !== existingUser.password){   
+                    res.status(401).send({message : 'Not Authorized to access the user account'});
                     return;
                 }
                 else{
@@ -62,11 +61,34 @@ exports.login = (req, res) => {
                 } 
             }
         }).catch((err) => {
-            res.status(500).send({message : 'Error while loggong in'});
+            res.status(500).send({message : 'Error while logging in'});
         })
 };
 
-//Update user
+//List user details
+exports.getUserDetails = (req, res) => {
+    const email = req.body.email;
+
+    User.findOne({
+        where : {
+            email : email
+        },
+        attributes : {
+            include : ['firstName', 'lastName', 'email', 'address']
+        }
+    }).then(existingUser => {
+        if(!existingUser){
+            res.status(200).send({message : `User with the email ${email} already exits`});
+        }
+        else{
+            res.send(existingUser);
+        }
+    }).catch((err) => {
+        res.status(500).send({message : `Error while creating user with email ${email}`})
+    });
+};
+
+//Update user details
 exports.updateUser = (req, res) => {
     const emailId = req.body.email;
 

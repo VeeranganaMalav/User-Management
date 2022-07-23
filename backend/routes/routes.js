@@ -8,14 +8,11 @@ module.exports = app => {
     //User Login
     router.get('/login', userController.login);
 
-    //Add user address
-    // router.post('/addAddress', userController.addAddress);
+    //List all users details
+    // router.get('/usersDetails', userController.getUserDetails);
 
-    //List all users with address
-    // router.get('/users', userController.listUsersWithAddress);
-
-    //Update user
-    router.put('/updateUser', userController.updateUser);
+    //Update user details
+    router.put('/updateUserDetails', userController.updateUser);
 
     app.use('/api', router);
 };
