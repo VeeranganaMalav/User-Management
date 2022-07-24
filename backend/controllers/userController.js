@@ -20,12 +20,17 @@ exports.signup = (req, res) => {
             }
         }).then(existingUser => {
             if(existingUser){
-                res.status(200).send({message : `User with the email ${email} already exits`});
+                res.status(409).send({message : `User with the email ${email} already exits`});
             }
             else{       //if user does not exist then create a new one
                 User.create(req.body)
                     .then((createdUser) => {
-                        res.status(200).send(createdUser);
+                        res.status(200).send({
+                            firstName : createdUser.firstName,
+                            lastName : createdUser.lastName,
+                            email : createdUser.email,
+                            address : createdUser.address
+                        });
                     }); 
             }
         }).catch((err) => {
@@ -41,9 +46,6 @@ exports.login = (req, res) => {
     User.findOne({
         where : {
             email : req.body.email
-        },
-        attributes : {
-            include : ['password', 'salt']
         }
         }).then(existingUser => {
             if(!existingUser || !attemptedPassword){      //if invalid email is provided or password is not provided
@@ -57,7 +59,12 @@ exports.login = (req, res) => {
                     return;
                 }
                 else{
-                    res.status(200).send(existingUser);
+                    res.status(200).send({
+                        firstName : existingUser.firstName,
+                        lastName : existingUser.lastName,
+                        email : existingUser.email,
+                        address : existingUser.address
+                    });
                 } 
             }
         }).catch((err) => {
@@ -99,12 +106,22 @@ exports.updateUser = (req, res) => {
             }
         })
         .then((num) => {        //where "num" represents number of rows affected
+            console.log(num);
             if(num == 1){
-                res.status(200).send({message : `User with email ${emailId} was updated successfully`});
+                return User.findByPk(emailId);
             }
             else{
-                res.send({message : `Cannot update user with email ${emailId}`});
+                res.status(400).send({message : `Cannot update user with email ${emailId}`});
             }
+        }).then( user => {
+            console.log('UPDATED USER' , user);
+                res.status(200).send({
+                    message : `User was updated successfully`,
+                        firstName : user.firstName,
+                        lastName : user.lastName,
+                        email : user.email,
+                        address : user.address
+                });
         }).catch((err) => {
             res.status(500).send({message : `Error updating user with email ${emailId}`});
         });

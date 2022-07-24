@@ -28,7 +28,7 @@ app.use(express.static(browserPath));
 app.use(express.static(buildPath));
 app.use(express.static(nodeModulesPath));
 
-db.sequelize.sync({force : true})
+db.sequelize.sync()
     .then((result) => {
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
