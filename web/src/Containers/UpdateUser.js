@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import Axios from 'axios';
 import Form from 'react-bootstrap/Form';
-
+import { Navigate } from "react-router-dom";
 import { LoaderButton } from '../Components';
 
 import "./UpdateUser.css";
@@ -11,10 +12,21 @@ export default class User extends Component {
     super(props);
 
     this.state = {
+      isLoading: false,
       firstName: "",
       lastName: "",
       address: ""
     };
+  }
+
+  componentDidMount() {
+    const { user } = this.props;
+    const { firstName, lastName } = user;
+
+    this.setState({
+      firstName,
+      lastName
+    })
   }
 
   validateForm() {
@@ -31,9 +43,36 @@ export default class User extends Component {
     });
   }
 
+  handleSubmit = async event => {
+    event.preventDefault();
+
+    const updateUserBody = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      address: this.state.address,
+      email: this.props.user.email
+    }
+    this.setState({ isLoading: true });
+    console.log('updateUserBody - ', updateUserBody);
+    try {
+      const userResp = await Axios.put('/api/updateUserDetails', updateUserBody);
+      console.log('userResp.data - ', userResp.data);
+      if(userResp.status === 200) {
+        this.props.setUser(userResp.data);
+      }
+    } catch (e) {
+      alert(e.message);
+    }
+
+    this.setState({ isLoading: false });
+  }
+
   render() {
     return (
-      <div className="UodateUser">
+      <div className="UpdateUser">
+      {this.props.user.address &&
+          <Navigate to="/userDetails" replace={true} />
+      }
         <h3>Update User Details</h3>
         <Form onSubmit={this.handleSubmit}>
             <Form.Group controlId="firstName">
@@ -56,7 +95,7 @@ export default class User extends Component {
               <Form.Label>Address</Form.Label>
               <Form.Control
                 autoFocus
-                as="textarea" 
+                as="textarea"
                 rows={3}
                 value={this.state.address}
                 onChange={this.handleChange}

@@ -1,5 +1,8 @@
 import React, { Component } from "react";
+
+import Axios from 'axios';
 import Form from 'react-bootstrap/Form';
+import { Navigate } from "react-router-dom";
 
 import { LoaderButton } from '../Components';
 
@@ -23,14 +26,12 @@ export default class Signup extends Component {
 
   validateForm() {
     return (
+      this.state.firstName.length > 0 &&
+      this.state.lastName.length > 0 &&
       this.state.email.length > 0 &&
       this.state.password.length > 0 &&
       this.state.password === this.state.confirmPassword
     );
-  }
-
-  validateConfirmationForm() {
-    return this.state.confirmationCode.length > 0;
   }
 
   handleChange = event => {
@@ -39,71 +40,38 @@ export default class Signup extends Component {
     });
   }
 
-  // handleSubmit = async event => {
-  //   event.preventDefault();
+  handleSubmit = async event => {
+    event.preventDefault();
 
-  //   this.setState({ isLoading: true });
+    console.log('this.state - ', this.state);
+    const signupBody = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      email: this.state.email,
+      password: this.state.password
+    }
+    this.setState({ isLoading: true });
+    console.log('signupBody - ', signupBody);
+    try {
+      const userResp = await Axios.post('/api/signup', signupBody);
 
-  //   try {
-  //     const newUser = await Auth.signUp({
-  //       username: this.state.email,
-  //       password: this.state.password
-  //     });
-  //     this.setState({
-  //       newUser
-  //     });
-  //   } catch (e) {
-  //     alert(e.message);
-  //   }
+      if(userResp.status === 200) {
+        this.props.setUser(userResp.data);
+      }
+    } catch (e) {
+      alert(e.message);
+    }
 
-  //   this.setState({ isLoading: false });
-  // }
-
-  // handleConfirmationSubmit = async event => {
-  //   event.preventDefault();
-
-  //   this.setState({ isLoading: true });
-
-  //   try {
-  //     await Auth.confirmSignUp(this.state.email, this.state.confirmationCode);
-  //     await Auth.signIn(this.state.email, this.state.password);
-
-  //     this.props.userHasAuthenticated(true);
-  //     this.props.history.push("/");
-  //   } catch (e) {
-  //     alert(e.message);
-  //     this.setState({ isLoading: false });
-  //   }
-  // }
-
-  renderConfirmationForm() {
-    return (
-      <form onSubmit={this.handleConfirmationSubmit}>
-        <Form.Group controlId="confirmationCode">
-          <Form.Label>Confirmation Code</Form.Label>
-          <Form.Control
-            autoFocus
-            type="tel"
-            value={this.state.confirmationCode}
-            onChange={this.handleChange}
-          />
-          <Form.Text>Please check your email for the code.</Form.Text>
-        </Form.Group>
-        <LoaderButton
-          block
-          disabled={!this.validateConfirmationForm()}
-          type="submit"
-          isLoading={this.state.isLoading}
-          text="Verify"
-          loadingText="Verifying…"
-        />
-      </form>
-    );
+    this.setState({ isLoading: false });
   }
 
   renderForm() {
     return (
       <div>
+      {this.props.user.email &&
+          <Navigate to="/updateUserDetails" replace={true} />
+      }
+
         <h3>Sign Up Details</h3>
         <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="firstName">
@@ -163,9 +131,7 @@ export default class Signup extends Component {
   render() {
     return (
       <div className="Signup">
-        {this.state.newUser === null
-          ? this.renderForm()
-          : this.renderConfirmationForm()}
+        {this.renderForm()}
       </div>
     );
   }

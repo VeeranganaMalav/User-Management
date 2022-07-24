@@ -1,14 +1,23 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
-
+import { useNavigate } from "react-router-dom";
 import Table from 'react-bootstrap/Table';
 
+const DisplayUser = (props) => {
+  const { user } = props;
+  const { firstName, lastName, email, address} = user;
 
-const User = (props) => {
+  let navigate = useNavigate();
+
+  const handleClick = event => {
+    event.preventDefault();
+    navigate("/updateUserDetails", { replace: true, state: user });
+  }
+
   return (
     <div>
       <h3>User Details</h3>
-      <Button>Edit User</Button>
+      <Button onClick={e => handleClick(e)}>Edit User</Button>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -20,10 +29,10 @@ const User = (props) => {
         </thead>
         <tbody>
           <tr>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>tm@gmail.com</td>
-            <td>123 Lane, City, State, Pin Code</td>
+            <td>{firstName}</td>
+            <td>{lastName}</td>
+            <td>{email}</td>
+            <td>{address}</td>
           </tr>
         </tbody>
       </Table>
@@ -31,4 +40,4 @@ const User = (props) => {
   );
 };
 
-export default User;
+export default DisplayUser;
