@@ -1,4 +1,3 @@
-const { user } = require("../db/index.js");
 const db = require("../db/index.js");
 
 const User = db.user;
@@ -72,29 +71,6 @@ exports.login = (req, res) => {
         })
 };
 
-//List user details
-/* exports.getUserDetails = (req, res) => {
-    const email = req.params.userEmail;
-
-    User.findOne({
-        where : {
-            email : email
-        },
-        attributes : {
-            include : ['firstName', 'lastName', 'email', 'address']
-        }
-    }).then(existingUser => {
-        if(!existingUser){
-            res.status(200).send({message : `User with the email ${email} already exits`});
-        }
-        else{
-            res.send(existingUser);
-        }
-    }).catch((err) => {
-        res.status(500).send({message : `Error while creating user with email ${email}`})
-    });
-}; */
-
 //Update user details
 exports.updateUser = (req, res) => {
     const emailId = req.body.email;
@@ -114,7 +90,6 @@ exports.updateUser = (req, res) => {
                 res.status(400).send({message : `Cannot update user with email ${emailId}`});
             }
         }).then( user => {
-            console.log('UPDATED USER' , user);
                 res.status(200).send({
                     message : `User was updated successfully`,
                         firstName : user.firstName,
