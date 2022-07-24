@@ -8,16 +8,14 @@ import {
 
 import { Signup, Login, DisplayUser, UpdateUser } from './Containers';
 
-const AppRoutes = ({ setUser, user }) => {
-  console.log(`render app routes`);
-  console.log(`render app routes ${JSON.stringify(user)}`);
+const AppRoutes = (props) => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/userDetails" element={<DisplayUser setUser={setUser} user={user} />} />
-        <Route path="/updateUserDetails" element={<UpdateUser setUser={setUser} user={user} />} />
-        <Route path="/signup" element={<Signup setUser={setUser} user={user} />} />
-        <Route path="/login" element={<Login setUser={setUser} user={user} />} />
+        <Route path="/updateUserDetails" element={<UpdateUser {...props} />} />
+        <Route path="/userDetails" element={<DisplayUser {...props} />} />
+        <Route path="/signup" element={<Signup {...props} />} />
+        <Route path="/login" element={<Login {...props} />} />
       </Routes>
     </BrowserRouter>
   );

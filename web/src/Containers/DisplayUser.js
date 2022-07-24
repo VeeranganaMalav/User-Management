@@ -11,7 +11,8 @@ const DisplayUser = (props) => {
 
   const handleClick = event => {
     event.preventDefault();
-    navigate("/updateUserDetails", { replace: true, state: user });
+    console.log('clicked edit user in display user');
+    navigate("/updateUserDetails", { replace: true});
   }
 
   return (
