@@ -55,7 +55,7 @@ export default class Signup extends Component {
     try {
       const userResp = await Axios.post('/api/signup', signupBody);
 
-      if(userResp.status === 200) {
+      if (userResp.status === 200) {
         this.props.setUser(userResp.data);
       }
     } catch (e) {
@@ -68,9 +68,9 @@ export default class Signup extends Component {
   renderForm() {
     return (
       <div>
-      {this.props.user.email &&
-          <Navigate to="/updateUserDetails" replace={true} />
-      }
+        {this.props.user.email &&
+          <Navigate to={`/updateUserDetails`} />
+        }
 
         <h3>Sign Up Details</h3>
         <Form onSubmit={this.handleSubmit}>

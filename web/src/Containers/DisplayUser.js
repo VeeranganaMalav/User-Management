@@ -1,24 +1,22 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Table from 'react-bootstrap/Table';
 
 const DisplayUser = (props) => {
   const { user } = props;
   const { firstName, lastName, email, address} = user;
 
-  let navigate = useNavigate();
-
-  const handleClick = event => {
-    event.preventDefault();
+  const handleClick = () => {
     console.log('clicked edit user in display user');
-    navigate("/updateUserDetails", { replace: true});
   }
 
   return (
     <div>
       <h3>User Details</h3>
-      <Button onClick={e => handleClick(e)}>Edit User</Button>
+      <Link to={`/updateUserDetails`}>
+        <Button onClick={handleClick}>Edit User</Button>
+      </Link>
       <Table striped bordered hover>
         <thead>
           <tr>

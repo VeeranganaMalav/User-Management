@@ -11,10 +11,10 @@ export default class Login extends Component {
     super(props);
 
     this.state = {
-        isLoading: false,
-        email: "",
-        password: ""
-      };
+      isLoading: false,
+      email: "",
+      password: ""
+    };
   }
 
   validateForm() {
@@ -39,7 +39,7 @@ export default class Login extends Component {
     try {
       const loginResp = await Axios.post('/api/login', loginBody);
       console.log('loginResp.data - ', loginResp.data);
-      if(loginResp.status === 200) {
+      if (loginResp.status === 200) {
         this.props.setUser(loginResp.data);
       }
     } catch (e) {
@@ -52,9 +52,9 @@ export default class Login extends Component {
   render() {
     return (
       <div className="Login">
-      {this.props.user.address &&
-          <Navigate to="/userDetails" replace={true} />
-      }
+        {this.props.user.address &&
+          <Navigate to={`/userDetails`} />
+        }
         <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="email">
             <Form.Label>Email</Form.Label>
